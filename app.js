@@ -7,7 +7,7 @@ app.get('/', (req, res) => {
         <h1>Data Diri V1</h1>
         <p>Nama: Agung Sudarmanto</p>
         <p>Role: Cloud & DevOps Engineer</p>
-        <p>Version: 1.0</p>
+        <p>Version: 1.1</p>
     `);
 
    
