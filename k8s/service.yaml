@@ -3,6 +3,7 @@ kind: Service
 
 metadata:
   name: nodejs-service
+  namespace: default
 
 spec:
   selector:

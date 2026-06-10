@@ -3,6 +3,7 @@ kind: Deployment
 
 metadata:
   name: nodejs-app
+  namespace: default
   annotations:
     kubernetes.io/change-cause: "initial deploy v5"
 
