@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: nodejs-app
   annotations:
-    kubernetes.io/change-cause: "initial deploy v5"
+    kubernetes.io/change-cause: "initial deploy v3"
 
 spec:
   replicas: 2
@@ -22,7 +22,7 @@ spec:
       containers:
       - name: nodejs-app
 
-        image: agung114/nodejs-app:v5
+        image: agung114/nodejs-app:v3
 
         ports:
         - containerPort: 3000

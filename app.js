@@ -4,11 +4,11 @@ const app = express();
 
 app.get('/', (req, res) => {
     res.send(`
-        <h1>Data Diri V4</h1>
-        <p>Nama: Agung Sudarmanto 3</p>
+        <h1>Data Diri V5</h1>
+        <p>Nama: Agung Sudarmanto </p>
         <p>Role: Cloud Engineer</p>
         <p>Skill: AWS, Azure, Docker, Kubernetes</p>
-        <p>Version: 4.0</p>
+        <p>Version: 5.0</p>
     `);
 });
 app.listen(3000, () => {
