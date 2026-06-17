@@ -42,6 +42,41 @@ pipeline {
         }
 
         stage('Update Manifest GitOps') {
+        steps {
+         // Memanggil kredensial GitHub kamu
+            withCredentials([usernamePassword(credentialsId: 'github-token-jenkins', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                bat """
+                    @echo off
+                
+                    :: 1. Hapus folder manifest lama jika ada sisa build sebelumnya (biar bersih)
+                    if exist nodejs-manifest rmdir /s /q nodejs-manifest
+
+                    :: 2. Clone repository GitOps (nodejs-manifest) ke dalam workspace Jenkins
+                    git clone https://github.com/agung114/nodejs-manifest.git
+                
+                    :: 3. Masuk ke dalam folder repository tersebut
+                    cd nodejs-manifest
+
+                    :: 4. Update tag image di dalam file deployment.yaml menggunakan PowerShell (Pengganti 'sed' Linux)
+                    powershell -Command "(Get-Content deployment.yaml) -replace 'image: agung114/nodejs-app:.*', 'image: agung114/nodejs-app:${BUILD_NUMBER}' | Set-Content deployment.yaml"
+
+                    :: 5. Set identitas Git lokal agar Jenkins bisa melakukan commit
+                    git config user.email "jenkins@localhost"
+                    git config user.name "Jenkins Automation"
+
+                    :: 6. Susupkan Token GitHub ke dalam URL Remote agar lolos autentikasi saat Push
+                    git remote set-url origin https://%GIT_USERNAME%:%GIT_PASSWORD%@github.com/agung114/nodejs-manifest.git
+
+                    :: 7. Add, Commit, dan Push kembali ke GitHub
+                    git add deployment.yaml
+                    git commit -m "auto-update image to version ${BUILD_NUMBER} [skip ci]"
+                    git push origin main
+                """
+            }
+        }
+    }
+
+        stage('Update Manifest GitOps') {
             steps {
                 withCredentials([
                     usernamePassword(
