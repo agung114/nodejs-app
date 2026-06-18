@@ -6,7 +6,7 @@ pipeline {
         IMAGE_NAME = "agung114/nodejs-app"
         IMAGE_TAG = "${BUILD_NUMBER}"
         // ID Credential GitHub Token yang Anda simpan di Jenkins GUI
-        GITHUB_CREDENTIAL_ID = "github-token-jenkins"
+        GITHUB_CREDENTIAL_ID = "github-token"
     }
 
     stages {
@@ -44,7 +44,7 @@ pipeline {
         stage('Update Manifest GitOps') {
         steps {
          // Memanggil kredensial GitHub kamu
-            withCredentials([usernamePassword(credentialsId: 'github-token-jenkins', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+            withCredentials([usernamePassword(credentialsId: 'github-token', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                 bat """
                     @echo off
                 
