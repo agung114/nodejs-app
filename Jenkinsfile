@@ -6,7 +6,6 @@ agent any
 environment {
     IMAGE_NAME = "agung114/nodejs-app"
     IMAGE_TAG = "${BUILD_NUMBER}"
-    GITHUB_CREDENTIAL_ID = "github-token"
 }
 
 stages {
@@ -20,7 +19,9 @@ stages {
 
     stage('Build Docker') {
         steps {
-            bat "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+            bat """
+            docker build -t %IMAGE_NAME%:%IMAGE_TAG% .
+            """
         }
     }
 
@@ -33,6 +34,7 @@ stages {
                     passwordVariable: 'DOCKER_PASS'
                 )
             ]) {
+
                 bat """
                 docker login -u %DOCKER_USER% -p %DOCKER_PASS%
                 docker push %IMAGE_NAME%:%IMAGE_TAG%
@@ -43,9 +45,10 @@ stages {
 
     stage('Update Manifest GitOps') {
         steps {
+
             withCredentials([
                 usernamePassword(
-                    credentialsId: "${GITHUB_CREDENTIAL_ID}",
+                    credentialsId: 'github-token',
                     usernameVariable: 'GIT_USERNAME',
                     passwordVariable: 'GIT_PASSWORD'
                 )
@@ -60,12 +63,15 @@ stages {
 
                 cd nodejs-manifest
 
-                powershell -Command "(Get-Content deployment.yaml) -replace 'image: agung114/nodejs-app:.*', 'image: %IMAGE_NAME%:%IMAGE_TAG%' | Set-Content deployment.yaml"
+                powershell -Command "(Get-Content deployment.yaml) -replace 'image: agung114/nodejs-app:.*', 'image: agung114/nodejs-app:%IMAGE_TAG%' | Set-Content deployment.yaml"
 
                 git config user.email "jenkins@localhost"
                 git config user.name "Jenkins Automation"
 
                 git add deployment.yaml
+
+                git diff --cached --quiet
+                if %ERRORLEVEL% EQU 0 exit /b 0
 
                 git commit -m "auto-update image to version %IMAGE_TAG% [skip ci]"
 
@@ -73,6 +79,17 @@ stages {
                 """
             }
         }
+    }
+}
+
+post {
+
+    success {
+        echo 'Pipeline SUCCESS'
+    }
+
+    failure {
+        echo 'Pipeline FAILED'
     }
 }
 ```
