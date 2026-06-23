@@ -4,15 +4,15 @@ const app = express();
 
 app.get('/', (req, res) => {
     res.send(`
-        <h1>Data Diri agung ganteng bangetV200</h1>
+        <h1>Data Diri agung ganteng bangetV111</h1>
         <p>Nama: Agung Sudarmanto </p>
         <p>Role: Cloud Engineer</p>
         <p>Skill: AWS, Azure, Docker, Kubernetes</p>
-        <p>Version: 200.0</p>
+        <p>Version: 111.0</p>
     `);
 });
 app.listen(3000, () => {
-    console.log('release v200');
+    console.log('release v111');
 });
 
 
